@@ -1,4 +1,4 @@
-# Repository for useful PowerCLI scripts 
+# Repository for useful Powershell scripts 
 
 This is a repository for useful scripts and commands that I have written and used in production environments to accomplish multiple
 goals.
