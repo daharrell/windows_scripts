@@ -10,25 +10,24 @@ $DNSServer2 = “Dns.Server2.com”
 $DnsServers = $DnsServer1, $DnsServer2
 $DNSZone = “ZoneName.com”
 
-#CSV must be located on your desktop with the filename dnsupdate.csv
+# CSV must be located on your desktop with the filename dnsupdate.csv
 # Format of the csvfile should look like this:
 # Name,Type,Address
 # ComputerName,A,IpAddress
 
 $Input = “c:\users\$env:USERNAME\desktop\dnsupdate.csv"
+$TestPath = Test-Path $Input
 
-# Read the input file which is formatted as name, type, address with a header row
-$records = Import-CSV $Input
-
-# Now we loop through the file to delete and re-create records
-# DNSCMD does not have a modify option so we must use /RecordDelete first followed by a /RecordAdd
-
+If ($TestPath -eq $True){
+    # Read the input file which is formatted as name, type, address with a header row
+    $records = Import-CSV $Input
+    # Now we loop through the file to delete and re-create records
+    # DNSCMD does not have a modify option so we must use /RecordDelete first followed by a /RecordAdd
 ForEach ($record in $records) {
     #Capture the DNS record contents as variables from the CSV
     $recordName = $record.name
     $recordType = $record.type
     $recordAddress = $record.address
-
       ForEach ($Dns in $DnsServers){
       # DNSCMD DELETE command syntax
       # Deletes the existing A record
@@ -41,9 +40,9 @@ ForEach ($record in $records) {
       # Deletes the existing A record from the DNS Server(s)
       Write-Host “Running the following command: $Delete”
       Invoke-Expression $Delete
-
       # Creates a new A record
       Write-Host “Running the following command: $Add”
       Invoke-Expression $Add
       }
+}
 }
